@@ -25,4 +25,10 @@ export class Editora {
 
   @UpdateDateColumn()
   updated_at!: Date;
+  
+  constructor(nome: string, cidade: string, email: string) {
+    this.nome = nome;
+    this.cidade = cidade;
+    this.email = email;
+  }
 }
