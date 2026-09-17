@@ -6,11 +6,43 @@ beforeEach(resetarBanco);
 afterAll(fecharBanco);
 
 describe('Rotas de Livro', () => {
-  it.todo('`GET /livros` → **200** e **5** livros');
-  it.todo('`GET /livros/1` → **200**, `titulo` = "O Hobbit"');
-  it.todo('`GET /livros/999` → **404**');
-  it.todo('`POST /livros` válido (`titulo`, `paginas` ≥ 1, `autor_id` e `editora_id` existentes) → **201** com `id` no corpo');
-  it.todo('`POST /livros` com body vazio → **400**');
+  it('`GET /livros` → **200** e **5** livros', async () => {
+        const res = await request(app).get('/livros');
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveLength(5);
+      });
+  it('`GET /livros/1` → **200**, `titulo` = "O Hobbit"', async () => {
+        const res = await request(app).get('/livros/1');
+        expect(res.status).toBe(200);
+        expect(res.body.titulo).toBe('O Hobbit');
+    });
+  it('`GET /livros/999` → **404**', async () => {
+        const res = await request(app).get('/livros/999');
+        expect(res.status).toBe(404);
+    });
+  it('`POST /livros` válido (`titulo`, `paginas` ≥ 1, `autor_id` e `editora_id` existentes) → **201** com `id` no corpo', async () => {
+        const res = await request(app).post('/livros').send(
+          {
+            titulo: 'test',
+            paginas: 1 ,
+            autor_id: 1 ,
+            editora_id: 1 ,
+          }
+        );
+        expect(res.status).toBe(201);
+        expect(res.body).toEqual(
+            expect.objectContaining({
+              id: 6
+            })
+          );
+    });
+  it('`POST /livros` com body vazio → **400**', async () => {
+        const res = await request(app).post('/livros')
+        .send(
+            {}
+        );
+        expect(res.status).toBe(400);
+      });
   it.todo('`POST /livros` com `autor_id` inexistente (`999`) → **400**');
   it.todo('`POST /livros` com `editora_id` inexistente (`999`) → **400**');
   it.todo('`POST /livros` com `paginas` = `0` → **400**');

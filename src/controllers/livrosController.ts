@@ -19,6 +19,10 @@ export async function mostrarLivro(req: Request, res: Response): Promise<void> {
 
 export async function criarLivro(req: Request, res: Response): Promise<void> {
   const dados = req.body as Partial<Livro>;
+  if(!dados.autor_id || !dados.editora_id || !dados.paginas || !dados.titulo){
+    res.status(400).json({ erro: 'dados não inseridos' });
+
+  }
   const livro = livros().create(dados);
   await livros().save(livro);
   res.status(201).json(livro);
