@@ -1,8 +1,13 @@
 import type { Request, Response } from 'express';
 import { AppDataSource } from '../db/dataSource';
 import { Livro } from '../models/livro';
+import { Autor } from '../models/autor';
+import { Editora } from '../models/editora';
 
 const livros = () => AppDataSource.getRepository(Livro);
+const autores = () => AppDataSource.getRepository(Autor);
+const editoras = () => AppDataSource.getRepository(Editora);
+
 
 export async function listarLivros(_req: Request, res: Response): Promise<void> {
   res.json(await livros().find({ order: { id: 'ASC' } }));
@@ -21,7 +26,19 @@ export async function criarLivro(req: Request, res: Response): Promise<void> {
   const dados = req.body as Partial<Livro>;
   if(!dados.autor_id || !dados.editora_id || !dados.paginas || !dados.titulo){
     res.status(400).json({ erro: 'dados não inseridos' });
-
+  }
+    const autor = await autores().findOne({ where: { id: dados.autor_id } });
+  if (!autor) {
+    res.status(400).json({ erro: 'autor_id inexistente' });
+    return;
+  }
+  const editora = await editoras().findOne({ where: { id: dados.editora_id } });
+  if (!editora) {
+    res.status(400).json({ erro: 'editora_id inexistente' });
+    return;
+  }
+  if(dados.paginas === undefined || dados.paginas < 1 ){
+    res.status(400).json({ erro: 'valor do campo "paginas inserido incorretamente" ' }); 
   }
   const livro = livros().create(dados);
   await livros().save(livro);

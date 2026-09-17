@@ -43,14 +43,82 @@ describe('Rotas de Livro', () => {
         );
         expect(res.status).toBe(400);
       });
-  it.todo('`POST /livros` com `autor_id` inexistente (`999`) → **400**');
-  it.todo('`POST /livros` com `editora_id` inexistente (`999`) → **400**');
-  it.todo('`POST /livros` com `paginas` = `0` → **400**');
-  it.todo('`POST /livros` com `paginas` negativas → **400**');
-  it.todo('`PUT /livros/1` (`{ paginas }`) → **200**');
-  it.todo('`PUT /livros/999` → **404**');
-  it.todo('`DELETE /livros/5` → **204**');
-  it.todo('`DELETE /livros/999` → **404**');
-  it.todo('`GET /editoras/2/livros` → os livros da editora 2');
+  it('`POST /livros` com `autor_id` inexistente (`999`) → **400**', async () => {
+        const res = await request(app).post('/livros').send(
+          {
+            titulo: 'test',
+            paginas: 1 ,
+            autor_id: 999 ,
+            editora_id: 1 ,
+          }
+        );
+        expect(res.status).toBe(400);
+      });
+  it('`POST /livros` com `editora_id` inexistente (`999`) → **400**', async () => {
+        const res = await request(app).post('/livros').send(
+          {
+            titulo: 'test',
+            paginas: 1 ,
+            autor_id: 1 ,
+            editora_id: 999 ,
+          }
+        );
+        expect(res.status).toBe(400);
+      });
+  it('`POST /livros` com `paginas` = `0` → **400**', async () => {
+        const res = await request(app).post('/livros').send(
+          {
+            titulo: 'test',
+            paginas: 0 ,
+            autor_id: 1 ,
+            editora_id: 1 ,
+          }
+        );
+        expect(res.status).toBe(400);
+      });;
+  it('`POST /livros` com `paginas` negativas → **400**', async () => {
+        const res = await request(app).post('/livros').send(
+          {
+            titulo: 'test',
+            paginas: -1 ,
+            autor_id: 1 ,
+            editora_id: 1 ,
+          }
+        );
+        expect(res.status).toBe(400);
+      });
+  it('`PUT /livros/1` (`{ paginas }`) → **200**', async () => {
+        const res = await request(app).put('/livros/1')
+        .send(
+            {
+                paginas: 5,
+            }
+        );
+        
+        expect(res.status).toBe(200);
+    });
+  it('`PUT /livros/999` → **404**', async () => {
+        const res = await request(app).put('/livros/999')
+        .send(
+            {
+                paginas: 5,
+            }
+        );
+        
+        expect(res.status).toBe(404);
+    });
+  it('`DELETE /livros/5` → **204**', async () => {
+        const res = await request(app).delete('/livros/5');
+        expect(res.status).toBe(204);
+    });
+  it('`DELETE /livros/999` → **404**', async () => {
+        const res = await request(app).delete('/livros/999');
+        expect(res.status).toBe(404);
+    });
+  it('`GET /editoras/2/livros` → os livros da editora 2', async () => {
+        const res = await request(app).get('/editoras/2/livros');
+        expect(res.status).toBe(200)
+        expect(res.body).toHaveLength(1)
+    });
   it.todo('`POST /livros` para a editora 2 e, em seguida, `GET /editoras/2/livros` → a lista **cresce em 1** e inclui o novo livro');
 });
