@@ -120,5 +120,17 @@ describe('Rotas de Livro', () => {
         expect(res.status).toBe(200)
         expect(res.body).toHaveLength(1)
     });
-  it.todo('`POST /livros` para a editora 2 e, em seguida, `GET /editoras/2/livros` → a lista **cresce em 1** e inclui o novo livro');
+  it('`POST /livros` para a editora 2 e, em seguida, `GET /editoras/2/livros` → a lista **cresce em 1** e inclui o novo livro', async () => {
+        await request(app).post('/livros').send(
+          {
+            titulo: 'test',
+            paginas: 1 ,
+            autor_id: 1 ,
+            editora_id: 2 ,
+          }
+        );
+        const res = await request(app).get('/editoras/2/livros');
+        expect(res.status).toBe(200)
+        expect(res.body).toHaveLength(2)
+    });
 });
