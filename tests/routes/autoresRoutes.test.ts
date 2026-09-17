@@ -36,7 +36,13 @@ describe('Rotas de Autor', () => {
             })
           );
     });
-    test.todo('`POST /autores` com body vazio → **400**');
+    test('`POST /autores` com body vazio → **400**', async () => {
+        const res = await request(app).post('/autores')
+        .send(
+            {}
+        );
+        expect(res.status).toBe(400);
+      });
     test.todo('`PUT /autores/1` (`{ nacionalidade }`) → **200** com a nacionalidade nova');
     test.todo('`PUT /autores/999` → **404**');
     test.todo('`DELETE /autores/3` → **204**');
